@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 public abstract class RemoteResource
@@ -30,12 +31,18 @@ public abstract class RemoteResource
 
     protected final Requester requester;
     protected final String path;
-    protected final String handle;
+    protected final byte[] handle;
 
-    protected RemoteResource(Requester requester, String path, String handle) {
+    protected RemoteResource(Requester requester, String path, byte[] handle) {
         this.requester = requester;
         this.path = path;
         this.handle = handle;
+        if (log.isTraceEnabled()) {
+            log.trace("Created RemoteResource {} for requester {} and path {}", this, requester, path);
+            for (int i = 0; i < handle.length; i++) {
+                log.trace("Handle byte {}: {}", (i + 1), Integer.toHexString(handle[i] & 0xFF));
+            }
+        }
     }
 
     public String getPath() {
